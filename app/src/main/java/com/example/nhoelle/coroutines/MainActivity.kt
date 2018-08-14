@@ -1,6 +1,5 @@
 package com.example.nhoelle.coroutines
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -20,12 +19,7 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         viewModel.color.observe(this, androidx.lifecycle.Observer { t ->
             when (t.state) {
-                State.LOADING -> {
-                    progress.visibility = View.VISIBLE
-                    if (t.color != Color.TRANSPARENT) {
-                        text.setBackgroundColor(t.color)
-                    }
-                }
+                State.LOADING -> progress.visibility = View.VISIBLE
                 else -> {
                     progress.hide()
                     text.setBackgroundColor(t.color)
