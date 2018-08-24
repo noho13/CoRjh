@@ -1,6 +1,7 @@
 package com.example.nhoelle.coroutines
 
 import android.graphics.Color
+import com.example.nhoelle.coroutines.api.Service
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
 import java.util.*
@@ -16,4 +17,6 @@ class MainRepo {
         val rnd = Random()
         return Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
     }
+
+    public fun loadUsers() = null
 }
