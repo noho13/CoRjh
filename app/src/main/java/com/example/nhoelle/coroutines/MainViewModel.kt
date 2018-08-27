@@ -3,27 +3,23 @@ package com.example.nhoelle.coroutines
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.nhoelle.coroutines.model.SearchResult
 import kotlinx.coroutines.experimental.launch
 
 class MainViewModel : ViewModel() {
 
     private val repo = MainRepo()
-    val color = MutableLiveData<Resource>()
+    val data = MutableLiveData<Resource<SearchResult>>()
 
-    fun getColor() {
-        launch(uiContext) {
-            color.value = Resource.onLoading() // show loading on UI thread
-            val colorValue = repo.loadColor().await() // load away from UI thread
-            color.value = colorValue // set color value on UI thread
-        }
-    }
-
-    fun loadUsers() {
+    fun loadPicturesForQuery(query: String) {
+        Log.d("MainViewModel", "query is $query")
         launch(uiContext) {
             try {
-//                val users = repo.loadUsers().await()
-//                Log.d("MainViewModel", "users size is ${users.size}")
+                data.value = Resource.onLoading() // show loading on UI thread
+                val result = repo.loadData(query).await() // load away from UI thread
+                data.value = Resource.onSuccess(result) // set color value on UI thread
             } catch (e: Exception) {
+                data.value = Resource.onError(e.message ?: "some error happened")
                 Log.d("MainViewModel", "exception is ${e.message}")
             }
         }

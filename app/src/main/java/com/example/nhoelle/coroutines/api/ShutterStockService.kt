@@ -8,6 +8,7 @@ import retrofit2.http.Query
 
 interface ShutterStockService {
 
-    @GET("/images/search?per_page=30")
+
+    @GET("images/search?per_page=30")
     fun getSearchResult(@Query("query") query: String): Deferred<SearchResult>
 }

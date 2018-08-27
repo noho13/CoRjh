@@ -1,13 +1,16 @@
 package com.example.nhoelle.coroutines.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.nhoelle.coroutines.MainViewModel
 import com.example.nhoelle.coroutines.R
+import com.example.nhoelle.coroutines.State
 import kotlinx.android.synthetic.main.fr_main.*
 
 
@@ -36,26 +39,45 @@ class MainFragment : Fragment() {
             (it as AppCompatActivity).setSupportActionBar(toolbar)
         }
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-
+        viewModel.data.observe(this, Observer {
+            it?.let {
+                when (it.state) {
+                    State.LOADING -> progress.visibility = View.VISIBLE
+                    State.Success -> {
+                        progress.visibility = View.GONE
+                        Log.d(TAG, "success with result ${it.data}")
+                    }
+                    State.ERROR -> {
+                        progress.visibility = View.GONE
+                        Log.d(TAG, "error with message ${it.message}")
+                    }
+                }
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        super.onCreateOptionsMenu(menu, inflater)
         inflater?.inflate(R.menu.search, menu)
-        val searchView = menu?.findItem(R.id.action_search)?.actionView as SearchView
+
+        val searchItem = menu?.findItem(R.id.action_search)
+        val searchView = searchItem?.actionView as SearchView
+
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
+                searchItem.collapseActionView()
                 startSearchFor(query)
                 return true
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                return true
+                return false
             }
         })
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     private fun startSearchFor(searchQuery: String) {
-
+        Log.d(TAG, "search for $searchQuery")
+        viewModel.loadPicturesForQuery(searchQuery)
     }
 }

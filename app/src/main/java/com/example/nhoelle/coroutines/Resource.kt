@@ -1,10 +1,9 @@
 package com.example.nhoelle.coroutines
 
-import android.graphics.Color
-
-class Resource(var state: State, var color: Int) {
+class Resource<T>(var state: State, var data: T?, var message: String? = null) {
     companion object {
-        fun onLoading() = Resource(State.LOADING, Color.TRANSPARENT)
-        fun onReady(color: Int) = Resource(State.READY, color)
+        fun <T> onLoading() = Resource<T>(State.LOADING, null)
+        fun <T> onSuccess(data: T) = Resource(State.Success, data)
+        fun <T> onError(message: String) = Resource<T>(State.ERROR, null, message)
     }
 }

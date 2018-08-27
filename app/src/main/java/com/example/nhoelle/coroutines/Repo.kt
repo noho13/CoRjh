@@ -10,7 +10,7 @@ class MainRepo {
 
     fun loadColor() = async(bgContext) {
         delay(5000L)
-        Resource.onReady(createRandomColor())
+        Resource.onSuccess(createRandomColor())
     }
 
     private fun createRandomColor(): Int {
@@ -18,5 +18,6 @@ class MainRepo {
         return Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
     }
 
-    public fun loadUsers() = null
+    fun loadData(query: String) = Service.service.getSearchResult(query)
+
 }
