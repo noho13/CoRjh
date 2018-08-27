@@ -3,14 +3,18 @@ package com.example.nhoelle.coroutines.ui
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.nhoelle.coroutines.MainViewModel
 import com.example.nhoelle.coroutines.R
 import com.example.nhoelle.coroutines.State
+import com.example.nhoelle.coroutines.adapter.RVAdapter
+import com.example.nhoelle.coroutines.hideKeyboard
 import kotlinx.android.synthetic.main.fr_main.*
 
 
@@ -38,6 +42,11 @@ class MainFragment : Fragment() {
         activity?.let {
             (it as AppCompatActivity).setSupportActionBar(toolbar)
         }
+        val rvAdapter = RVAdapter()
+        recycler.apply {
+            layoutManager = LinearLayoutManager(context)
+            setHasFixedSize(true)
+        }
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         viewModel.data.observe(this, Observer {
             it?.let {
@@ -45,11 +54,15 @@ class MainFragment : Fragment() {
                     State.LOADING -> progress.visibility = View.VISIBLE
                     State.Success -> {
                         progress.visibility = View.GONE
+                        it.data?.let {
+                            rvAdapter.data = it
+                            recycler.adapter = rvAdapter
+                        }
                         Log.d(TAG, "success with result ${it.data}")
                     }
                     State.ERROR -> {
                         progress.visibility = View.GONE
-                        Log.d(TAG, "error with message ${it.message}")
+                        Toast.makeText(activity, "error with message ${it.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -64,7 +77,7 @@ class MainFragment : Fragment() {
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                searchItem.collapseActionView()
+                hideKeyboard(searchView)
                 startSearchFor(query)
                 return true
             }
@@ -77,7 +90,6 @@ class MainFragment : Fragment() {
     }
 
     private fun startSearchFor(searchQuery: String) {
-        Log.d(TAG, "search for $searchQuery")
         viewModel.loadPicturesForQuery(searchQuery)
     }
 }

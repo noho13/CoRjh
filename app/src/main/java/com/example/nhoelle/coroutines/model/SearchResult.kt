@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class SearchResult(val page: Int,
                         @SerializedName("per_page") val perPage: Int,
                         @SerializedName("total_count") val totalCount: Int,
-                        val data: List<Data>?)
+                        val data: List<Data>)
 
 data class Data(val id: String, val assets: Assets, val description: String)
 data class Assets(val preview: Preview)

@@ -10,7 +10,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 object Service {
-
     val service: ShutterStockService by lazy {
         Retrofit.Builder()
                 .baseUrl("https://api.shutterstock.com/v2/")
