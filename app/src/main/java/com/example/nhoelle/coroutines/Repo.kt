@@ -1,5 +1,6 @@
 package com.example.nhoelle.coroutines
 
+import android.graphics.Bitmap
 import android.graphics.Color
 import com.example.nhoelle.coroutines.api.Service
 import kotlinx.coroutines.experimental.async
@@ -19,5 +20,9 @@ class MainRepo {
     }
 
     fun loadData(query: String) = Service.service.getSearchResult(query)
+
+    fun saveBitmap(bitmap: Bitmap) {
+
+    }
 
 }

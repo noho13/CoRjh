@@ -15,6 +15,7 @@ import com.example.nhoelle.coroutines.R
 import com.example.nhoelle.coroutines.State
 import com.example.nhoelle.coroutines.adapter.RVAdapter
 import com.example.nhoelle.coroutines.hideKeyboard
+import com.example.nhoelle.coroutines.model.Result
 import kotlinx.android.synthetic.main.fr_main.*
 
 
@@ -42,7 +43,16 @@ class MainFragment : Fragment() {
         activity?.let {
             (it as AppCompatActivity).setSupportActionBar(toolbar)
         }
-        val rvAdapter = RVAdapter()
+        val rvAdapter = RVAdapter(clickAndSave = object : RVAdapter.ClickAndSave {
+            override fun onClick(pos: Int, item: Result) {
+                Toast.makeText(activity, "item at position $pos", Toast.LENGTH_SHORT).show()
+                Log.d(TAG, item.url)
+            }
+
+            override fun onSave(item: Result) {
+                viewModel.saveBitmap(item)
+            }
+        })
         recycler.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
